@@ -10,17 +10,19 @@
 if (!isDedicated) then {
 
 	"filmic" setToneMappingParams [0.07, 0.31, 0.23, 0.37, 0.011, 3.750, 6, 4]; setToneMapping "Filmic";
-
-	player_build		= compile preprocessFileLineNumbers "custom\snap_build\player_build.sqf";
-	player_buildControls	= compile preprocessFileLineNumbers "custom\snap_build\player_buildControls.sqf";
-	snap_object		= compile preprocessFileLineNumbers "custom\snap_build\snap_object.sqf";
+	/*DoorManagement Zupa*/
+	DoorGetFriends 		= compile preprocessFileLineNumbers "doorManagement\doorGetFriends.sqf";
+	DoorNearbyHumans 	= compile preprocessFileLineNumbers "doorManagement\doorNearbyHumans.sqf";
+	DoorAddFriend 		= compile preprocessFileLineNumbers "doorManagement\doorAddFriend.sqf";
+	DoorRemoveFriend 	= compile preprocessFileLineNumbers "doorManagement\doorRemoveFriend.sqf";
+	
 	BIS_Effects_Burn = 				compile preprocessFile "\ca\Data\ParticleEffects\SCRIPTS\destruction\burn.sqf";
 	player_zombieCheck = 			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_zombieCheck.sqf";	//Run on a players computer, checks if the player is near a zombie
 	player_zombieAttack = 			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_zombieAttack.sqf";	//Run on a players computer, causes a nearby zombie to attack them
-	fnc_usec_damageActions =		compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\fn_damageActions.sqf";		//Checks which actions for nearby casualty
+	fnc_usec_damageActions =		compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Compile\fn_damageActions.sqf";		//Checks which actions for nearby casualty
 	fnc_inAngleSector =				compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\fn_inAngleSector.sqf";		//Checks which actions for nearby casualty
 	//fnc_usec_selfActions =			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\fn_selfActions.sqf";		//Checks which actions for self
-	fnc_usec_selfActions = compile preprocessFileLineNumbers "custom\fn_selfActions.sqf";
+	fnc_usec_selfActions = 			compile preprocessFileLineNumbers "custom\fn_selfActions.sqf";
 	fnc_usec_unconscious =			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\fn_unconscious.sqf";
 	player_temp_calculation	=		compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\fn_temperatur.sqf";		//Temperatur System	//TeeChange
 	player_weaponFiredNear =		compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_weaponFiredNear.sqf";
@@ -29,12 +31,12 @@ if (!isDedicated) then {
 	player_dumpBackpack = 			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_dumpBackpack.sqf";
 	building_spawnLoot =			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\building_spawnLoot.sqf";
 	building_spawnZombies =			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\building_spawnZombies.sqf";
-	dayz_spaceInterrupt =			compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\dayz_spaceInterrupt.sqf";
+	dayz_spaceInterrupt =			compile preprocessFileLineNumbers "Custom\Snap_Pro\dayz_spaceInterrupt.sqf";
 	player_fired =					compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_fired.sqf";			//Runs when player fires. Alerts nearby Zeds depending on calibre && audial rating
 	player_harvest =				compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_harvest.sqf";
-	player_packTent =				compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_packTent.sqf";
-	player_packVault =				compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_packVault.sqf";
-	player_unlockVault =			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_unlockVault.sqf";
+	player_packTent =				compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Compile\player_packTent.sqf";
+	player_packVault =				compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Compile\player_packVault.sqf";
+	player_unlockVault =			compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Compile\player_unlockVault.sqf";
 
 	player_removeObject =			compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\remove.sqf";
 	player_removeNearby =    		compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\object_removeNearby.sqf";
@@ -44,23 +46,27 @@ if (!isDedicated) then {
 		[["Hedgehog_DZ"], 1,"STR_EPOCH_ACTIONS_14"] call player_removeNearby;
 	};
 	player_removeNet = {
-		[["DesertLargeCamoNet","ForestCamoNet_DZ","DesertLargeCamoNet_DZ","ForestLargeCamoNet_DZ"], 5,"str_epoch_player_8"] call player_removeNearby;
+		[["DesertCamoNet_DZ","ForestCamoNet_DZ","DesertLargeCamoNet_DZ","ForestLargeCamoNet_DZ"], 5,"str_epoch_player_8"] call player_removeNearby;
 	};
 
 	player_login = {
-		private ["_unit","_detail"];
+		private ["_unit","_detail","_PUID"];
 		_unit = _this select 0;
 		_detail = _this select 1;
-		if(_unit == getPlayerUID player) then {
+		_PUID = [player] call FNC_GetPlayerUID;
+		if(_unit == _PUID) then {
 			player setVariable["publish",_detail];
 		};
 	};
 
-	player_unlockDoor =			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_unlockDoor.sqf";
+	player_unlockDoor = 		compile preprocessFileLineNumbers "doorManagement\player_unlockDoor.sqf";
 	player_changeCombo =		compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_changeCombo.sqf";
-
-	player_lockVault =			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_lockVault.sqf";
-	player_updateGui =			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_updateGui.sqf";
+	player_unlockDoorCode = compile preprocessFileLineNumbers "doorManagement\player_unlockDoorCode.sqf";
+	player_manageDoor       = compile preprocessFileLineNumbers "doorManagement\initDoorManagement.sqf";
+	player_enterCode       = compile preprocessFileLineNumbers "doorManagement\player_enterCode.sqf";
+	player_changeCombo = compile preprocessFileLineNumbers "doorManagement\player_changeCombo.sqf";
+	player_lockVault =			compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Compile\player_lockVault.sqf";
+	player_updateGui =			compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Compile\player_updateGui.sqf";
 	player_crossbowBolt =		compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_crossbowBolt.sqf";
 	player_music = 				compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_music.sqf";			//Used to generate ambient music
 	player_death =				compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_death.sqf";
@@ -90,7 +96,7 @@ if (!isDedicated) then {
 	pz_attack = 				compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\pzombie\pz_attack.sqf";
 
 	dog_findTargetAgent = 		compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\dog_findTargetAgent.sqf";
-
+	
 	//actions
 	player_countmagazines =		compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_countmagazines.sqf";
 	player_addToolbelt =		compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_addToolbelt.sqf";
@@ -98,8 +104,8 @@ if (!isDedicated) then {
 	player_reloadMag =			compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_reloadMags.sqf";
 	player_loadCrate =			compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_loadCrate.sqf";
 	player_craftItem =			compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_craftItem.sqf";
-	player_tentPitch =			compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\tent_pitch.sqf";
-	player_vaultPitch =			compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\vault_pitch.sqf";
+	player_tentPitch =			compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Action\tent_pitch.sqf";
+	player_vaultPitch =			compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Action\vault_pitch.sqf";
 	player_drink =				compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_drink.sqf";
 	player_eat =				compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_eat.sqf";
 	player_useMeds =			compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_useMeds.sqf";
@@ -107,15 +113,34 @@ if (!isDedicated) then {
 	player_makeFire =			compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_makefire.sqf";
 	player_harvestPlant =		compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_harvestPlant.sqf";
 	player_goFishing =			compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_goFishing.sqf";
-	player_build =				compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_build.sqf";
-	player_wearClothes =		compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_wearClothes.sqf";
+	
+	player_build =				compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Action\modular_build.sqf";
+	player_build_countNearby =	compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Action\player_build_countNearby.sqf";
+	player_build_states =		compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Action\player_build_states.sqf";
+	player_build_needNearby =	compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Action\player_build_needNearby.sqf";
+	player_build_getConfig =	compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Action\player_build_getConfig.sqf";
+	player_build_plotCheck =	compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Action\player_build_plotCheck.sqf";
+	player_build_buildReq =		compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Action\player_build_buildReq.sqf";
+	player_build_create =		compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Action\player_build_create.sqf";
+	player_build_controls =		compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Action\player_build_controls.sqf";
+	player_build_publish =		compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Action\player_build_publish.sqf";
+	DZE_snap_build_file = 		"Custom\Snap_Pro\snap_build.sqf"; // Set as a global variable as it is also referenced in snapbuild.sqf
+	snap_build = 				compile preprocessFileLineNumbers DZE_snap_build_file;
+	
+	FNC_check_owner =			compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Compile\fn_check_owner.sqf";
+	FNC_find_plots =			compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Compile\fn_find_plots.sqf";
+	
+//	player_wearClothes =		compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_wearClothes.sqf";
+	FillSkinList  = 			compile preprocessFileLineNumbers "zupa\skins\getList.sqf";
+	ApplySkinList  = 			compile preprocessFileLineNumbers "zupa\skins\changeClothes.sqf";
+	player_wearClothes  = 		compile preprocessFileLineNumbers "zupa\skins\player_wearClothes.sqf";
 	object_pickup = 			compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\object_pickup.sqf";
 	player_flipvehicle = 		compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_flipvehicle.sqf";
 	player_sleep = 				compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\player_sleep.sqf";
 	player_antiWall =			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_antiWall.sqf";
 	player_deathBoard =			compile preprocessFileLineNumbers "\z\addons\dayz_code\actions\list_playerDeathsAlt.sqf";
-
-	player_plotPreview = 		compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\object_showPlotRadius.sqf";
+	
+	player_plotPreview = 		compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\Action\object_showPlotRadius.sqf";
 	player_upgradeVehicle =		compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_upgradeVehicle.sqf";
 
 	//ui
@@ -518,7 +543,7 @@ if (!isDedicated) then {
 	dayz_zombieSpeak = 			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\object_speak.sqf";			//Used to generate random speech for a unit
 	vehicle_getHitpoints =			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\vehicle_getHitpoints.sqf";
 	local_gutObject =			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\local_gutObject.sqf";		//Generated on the server (|| local to unit) when gutting an object
-	local_lockUnlock =			compile preprocessFileLineNumbers "custom\local_lockUnlock.sqf";		//When vehicle is local to unit perform locking vehicle
+	local_lockUnlock =			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\local_lockUnlock.sqf";		//When vehicle is local to unit perform locking vehicle
 	local_gutObjectZ =			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\local_gutObjectZ.sqf";		//Generated on the server (|| local to unit) when gutting an object
 	local_zombieDamage = 			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\fn_damageHandlerZ.sqf";		//Generated by the client who created a zombie to track damage
 	local_eventKill = 			compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\local_eventKill.sqf";		//Generated when something is killed
@@ -536,6 +561,24 @@ if (!isDedicated) then {
 	spawn_loot =				compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\spawn_loot.sqf";
 	spawn_loot_small = compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\spawn_loot_small.sqf";
 	// player_projectileNear = 		compile preprocessFileLineNumbers "\z\addons\dayz_code\compile\player_projectileNear.sqf";
+	
+	FNC_GetPlayerUID = {
+		private ["_object","_version","_PID"];
+		_object = _this select 0;
+		_version = productVersion select 3;
+		if (DayZ_UseSteamID) then {
+			_PID = GetPlayerUID _object;
+		} else {
+			if (_version >= 125548) then {
+				_PID = call (compile "GetPlayerUIDOld _object");
+			} else {
+				_PID = GetPlayerUID _object;
+				diag_log format["Your game version, %1, is less than the required for the old UID system; using Steam ID system instead. Update to 1.63.125548 (or latest steam beta)", _version];
+			};
+		};
+		_PID
+	};
+	
 	FNC_GetSetPos = { //DO NOT USE IF YOU NEED ANGLE COMPENSATION!!!!
 		private "_pos";
 		_thingy = _this select 0;
@@ -546,6 +589,7 @@ if (!isDedicated) then {
 			_thingy setPosATL (ASLToATL _pos);
 		};
 	};
+	
 	FNC_GetPos = {
 		private "_pos";
 		if (isNil {_this select 0}) exitWith {[0,0,0]};
@@ -556,12 +600,14 @@ if (!isDedicated) then {
 		};
 		_pos
 	};
+	
 	local_setFuel =	{
 		private["_qty","_vehicle"];
 		_vehicle = _this select 0;
 		_qty = _this select 1;
 		_vehicle setFuel _qty;
 	};
+	
 	zombie_initialize = {
 		private ["_unit","_position"];
 		_unit = _this select 0;
@@ -621,5 +667,6 @@ if (!isDedicated) then {
 	} else {
 		eh_localCleanup = {};
 	};
-
+fnc_usec_damageVehicle =        compile preprocessFileLineNumbers "zupa\fn_damageHandlerVehicle.sqf";        //Event handler run on damage
+vehicle_handleDamage =          compile preprocessFileLineNumbers "zupa\vehicle_handleDamage.sqf";
 initialized = true;

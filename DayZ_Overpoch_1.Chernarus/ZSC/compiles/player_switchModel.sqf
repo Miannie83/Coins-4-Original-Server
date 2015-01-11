@@ -7,6 +7,7 @@ _currentAnim = animationState player;
 _tagSetting = player getVariable["DZE_display_name",false];
 _playerUID = getPlayerUID player;
 _weapons = weapons player;
+_zupaMags = magazines player;
 _countMags = call player_countMagazines; 
 _magazines = _countMags select 0;
 
@@ -126,10 +127,14 @@ _switchUnit = {
 	if(_currentWpn != "") then {_newUnit selectWeapon _currentWpn;};
 };
 
+//Add && Fill BackPack
+removeBackpack _newUnit;		
+
 if (!isNil "_newBackpackType") then {
 	if (_newBackpackType != "") then {
 		_newUnit addBackpack _newBackpackType;
 		dayz_myBackpack = unitBackpack _newUnit;
+		//Weapons
 		_backpackWpnTypes = [];
 		_backpackWpnQtys = [];
 		if (count _backpackWpn > 0) then {
@@ -165,6 +170,26 @@ if (!isNil "_newBackpackType") then {
 
 player disableConversation true;
 
+{
+if( !(_x in _weapons))then {
+[_x] call player_checkAndRemoveItems;
+};
+}count (weapons player);
+{
+if( !(_x in _zupaMags))then {
+[_x] call player_checkAndRemoveItems;
+};
+}count (magazines player);
+
+//player setVariable ["bodyName",dayz_playerName,true]; //Outcommit (Issue #991) - Also removed in DayZ Mod 1.8
+
+
+
+player setVariable ["cashMoney",_cashMoney,true];
+player setVariable ["bankMoney",_bankMoney];
+player setVariable ["headShots",_cashMoney2,true];
+player setVariable ["bank",_bankMoney2];
+player setVariable ["CharacterID",_cId,true];
 if (_tagSetting) then {
 	DZE_ForceNameTags = true;
 };
@@ -173,6 +198,7 @@ _playerUID = getPlayerUID player;
 _playerObjName = format["PVDZE_player%1",_playerUID];
 
 call compile format["%1 = player;",_playerObjName];
+publicVariableServer _playerObjName; //Outcommit in DayZ 1.8 No clue for what this is - Skaronator
 
 publicVariableServer _playerObjName;
 

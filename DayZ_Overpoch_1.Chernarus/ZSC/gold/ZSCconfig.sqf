@@ -19,10 +19,10 @@ ZSC_Overwrite_SwitchModel = true;
 ZSC_Overwrite_SelfActions = false;
 
  // if TRUE: Overwrites yours player_unlockVault.sqf with default 1 + edits. | IF False: Change content yourself @ step D
-ZSC_Overwrite_UnLockVault = true;
+ZSC_Overwrite_UnLockVault = false;
 
  // if TRUE: Overwrites yours player_lockVault.sqf with default 1 + edits. | IF False: Change content yourself @ step D
-ZSC_Overwrite_LockVault = true;
+ZSC_Overwrite_LockVault = false;
 
 /* IF YOU USE different mods like P4L it's recommended to do changes yourself or it wont work */
 

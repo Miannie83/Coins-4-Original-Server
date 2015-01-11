@@ -35,10 +35,10 @@ dayz_paraSpawn = false; // Experimental feature that will parachute spawn all pl
 dayz_sellDistance_vehicle = 80;
 dayz_sellDistance_boat = 80;
 dayz_sellDistance_air = 80;
-dayz_maxLocalZombies = 25;
-dayz_maxGlobalZombiesInit = 30;
+dayz_maxLocalZombies = 10;
+dayz_maxGlobalZombiesInit = 10;
 dayz_maxGlobalZombiesIncrease = 10;
-dayz_maxZeds = 500;
+dayz_maxZeds = 200;
 dayz_maxAnimals = 5; // Default: 8
 dayz_tameDogs = true;
 DynamicVehicleDamageLow = 10; // Default: 0
@@ -49,12 +49,16 @@ DZE_vehicleAmmo = 1; //Default = 0, deletes ammo from vehicles with machine guns
 DZE_BackpackGuard = false; //Default = True, deletes backpack contents if logging out or losing connection beside another player if set to true.
 DZE_BuildingLimit = 1000; //Default = 150, decides how many objects can be built on the server before allowing any others to be built. Change value for more buildings.
 DZE_TRADER_SPAWNMODE = false; //Vehicles bought with traders will parachute in instead of just spawning on the ground.
+DZE_StaticConstructionCount = 1; //how many steps to build process
+DZE_modularBuild = true;  //Turn on Snap Build Pro and the modular player build framework.
 DZE_BuildOnRoads = false; // Default: False
 DZE_GodModeBase = true;  //unbreakable bases
+DZE_APlotforLife = true;  //Turn on A plot for Life (check ownership against SteamID).
+DZE_PlotOwnership = true; //Turn on Take Plot Ownership (take ownership of all items on a plot except locked items).  This can be used to realign old bases to the A Plot of Life ownership system or for raiding and taking over bases.
 DZE_requireplot = 1;   //removes need for plot pole
-DZE_HeliLift = false;     //epoch default heli lifting
-DZE_R3F_WEIGHT = true;   //remove weight system
-DZE_PlotPole = [50,30];   //plot pole radius, exclusion zone
+DZE_HeliLift = true;     //epoch default heli lifting
+DZE_R3F_WEIGHT = false;   //remove weight system
+DZE_PlotPole = [110,50];   //plot pole radius, exclusion zone
 DZE_PlayerZed = false;    //player spawns back as zed
 DZE_ForceNameTagsInTrader = true; //Forces player names in traders
 /*ZSC*/
@@ -79,17 +83,17 @@ EpochEvents = [["any","any","any","any",0,"crash_spawner"],
 
 dayz_fullMoonNights = true;
 
-dayz_poleSafeArea = 60; // Default = 30m, the buildable distance
+dayz_poleSafeArea = 110; // Default = 30m, the buildable distance
 
 //Load in compiled functions
 call compile preprocessFileLineNumbers "custom\variables.sqf";				//Initilize the Variables (IMPORTANT: Must happen very early)
 progressLoadingScreen 0.1;
-call compile preprocessFileLineNumbers "\z\addons\dayz_code\init\publicEH.sqf";				//Initilize the publicVariable event handlers
+call compile preprocessFileLineNumbers "Custom\A_Plot_for_Life\init\publicEH.sqf";				//Initilize the publicVariable event handlers
 progressLoadingScreen 0.2;
 call compile preprocessFileLineNumbers "\z\addons\dayz_code\medical\setup_functions_med.sqf";	//Functions used by CLIENT for medical
 progressLoadingScreen 0.4;
 call compile preprocessFileLineNumbers "custom\compiles.sqf";				//Compile regular functions
-call compile preprocessFileLineNumbers "custom\snap_build\compiles.sqf";
+//call compile preprocessFileLineNumbers "custom\snap_build\compiles.sqf";
 /*ZSC*/	
 call compile preprocessFileLineNumbers "ZSC\gold\ZSCinit.sqf";
 /*ZSC*/	
@@ -146,11 +150,10 @@ execVM "\z\addons\dayz_code\external\DynamicWeatherEffects.sqf";
 [] execVM "debug\addmarkers.sqf";
 [] execVM "debug\addmarkers75.sqf";
 
-DefaultMagazines = ["30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","8Rnd_9x18_MakarovSD","8Rnd_9x18_MakarovSD","8Rnd_9x18_MakarovSD","8Rnd_9x18_MakarovSD","ItemBandage","ItemBandage","ItemBandage","ItemBandage","ItemPainkiller","ItemBloodbag","FoodbeefCooked","FoodbeefCooked","ItemSodaR4z0r","ItemSodaR4z0r"];
-DefaultWeapons = ["Binocular_Vector","NVGoggles","ItemHatchet_DZE","MakarovSD","M4SPR","ItemCrowbar","ItemEtool","ItemGPS","ItemKnife","ItemMatchbox_DZE","ItemToolbox"];
-DefaultBackpack = "DZ_TerminalPack_EP1";
-DefaultBackpackWeapon = "";
 
 // Epoch Admin Tools
 [] execVM "admintools\Activate.sqf";
 [] execvm "AGN\agn_SafeZoneCommander.sqf";
+
+waitUntil {!isNil "PVDZE_plr_LoginRecord"};
+if (!isDedicated && {dayzPlayerLogin2 select 2}) then {execVM "spawn\spawn.sqf";};
