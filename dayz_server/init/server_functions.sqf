@@ -7,6 +7,9 @@ BIS_MPF_remoteExecutionServer = {
 };
 
 BIS_Effects_Burn =				{};
+
+call compile preprocessFileLineNumbers "custom\compile\KK_Functions.sqf";
+
 server_playerLogin =			compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\server_playerLogin.sqf";
 server_playerSetup =			compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\server_playerSetup.sqf";
 server_onPlayerDisconnect = 	compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\server_onPlayerDisconnect.sqf";
@@ -621,6 +624,8 @@ dayz_recordLogin = {
 	_key = format["CHILD:103:%1:%2:%3:",_this select 0,_this select 1,_this select 2];
 	_key call server_hiveWrite;
 };
+currentInvites = [];
+publicVariable "currentInvites";
 
 #include "ESSconfig.sqf"
 
@@ -921,3 +926,22 @@ server_logUnlockLockEvent = {
 	};
 };
 execVM "\z\addons\dayz_server\init\ESSfloor.sqf";
+KK_fnc_floatToString = {
+    private "_arr";
+    if (abs (_this - _this % 1) == 0) exitWith { str _this };
+    _arr = toArray str abs (_this % 1);
+    _arr set [0, 32];
+    toString (toArray str (
+        abs (_this - _this % 1) * _this / abs _this
+    ) + _arr - [32])
+};
+
+KK_fnc_positionToString = {
+    format [
+        "[%1,%2,%3]",
+        _this select 0 call KK_fnc_floatToString,
+        _this select 1 call KK_fnc_floatToString,
+        _this select 2 call KK_fnc_floatToString
+    ]
+};
+execVM "\z\addons\dayz_server\init\broadcaster.sqf";
